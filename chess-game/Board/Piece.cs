@@ -16,6 +16,11 @@ namespace ChessGame.Board
 
             Position = null;
             Movements = 0;
-        }        
+        }  
+      
+        public void AlterPosition (Position newPosition)
+        {
+            Position = newPosition;
+        }
     }
 }

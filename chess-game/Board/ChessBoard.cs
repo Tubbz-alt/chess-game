@@ -31,6 +31,22 @@ namespace ChessGame.Board
             //piece.Position = position; <-- See later..
         }
 
+        public Piece RemovePiece (Position position)
+        {
+            if (PieceExists(position))
+            {
+                var piece = GetPiece(position);
+                Pieces[position.Line, position.Column] = null;
+                piece.AlterPosition(null);
+
+                return piece;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public bool PieceExists (Position position)
         {
             return GetPiece(position) != null;

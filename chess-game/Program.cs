@@ -10,22 +10,16 @@ namespace ChessGame
         static void Main (string[] args)
         {
             ChessBoard board = new ChessBoard();
-            
-            board.PutPiece(new King(board, Color.Yellow), new Position(1, 1));
-            board.PutPiece(new Tower(board, Color.Yellow), new Position(2, 1));
-            
+
+            board.PutPiece(new King(board, Color.Yellow), new Position(0, 0));
+            board.PutPiece(new Tower(board, Color.Yellow), new Position(1, 1));
 
             View.PrintChessBoard(board);
 
-            try
-            {
-                board.PutPiece(new Tower(board, Color.Yellow), new Position(2, 1));           
-            }
-            catch (ChessGame.Board.Exceptions.ChessBoardException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            board.RemovePiece(new Position(1, 1));
             
+            View.PrintChessBoard(board);
+
             Console.ReadLine();
         }
     }
