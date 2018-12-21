@@ -1,6 +1,7 @@
 ﻿using System;
 
 using ChessGame.Board;
+using ChessGame.Board.Exceptions;
 using ChessGame.Chess;
 
 namespace ChessGame
@@ -9,18 +10,29 @@ namespace ChessGame
     {
         static void Main (string[] args)
         {
-            ChessBoard board = new ChessBoard();
-
-            board.PutPiece(new King(board, Color.Yellow), new Position(0, 0));
-            board.PutPiece(new Tower(board, Color.Yellow), new Position(1, 1));
-
-            View.PrintChessBoard(board);
-
-            board.RemovePiece(new Position(1, 1));
+            ChessMatch match = new ChessMatch();
             
-            View.PrintChessBoard(board);
+            while (!match.Finished)
+            {
+                View.PrintChessBoard(match.ChessBoard);
+                
+                try
+                {    
+                    Console.Write("Origin: ");
+                    var originPosition = View.ReadChessPosition();
 
-            Console.ReadLine();
+                    Console.Write("\n");
+
+                    Console.Write("Target: ");
+                    var targetPosition = View.ReadChessPosition();
+
+                    match.ExecuteMoviment(originPosition, targetPosition);
+                }
+                catch (ChessBoardException e)
+                {
+                    View.PrintException(e);
+                }
+            }
         }
     }
 }

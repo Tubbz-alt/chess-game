@@ -27,8 +27,7 @@ namespace ChessGame.Board
                 throw new ChessBoardException("Already exists a peace in this position!");
 
             Pieces[position.Line, position.Column] = piece;
-            
-            //piece.Position = position; <-- See later..
+            piece.AlterPosition(position);
         }
 
         public Piece RemovePiece (Position position)

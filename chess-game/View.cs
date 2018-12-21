@@ -1,6 +1,8 @@
 ﻿using System;
 
 using ChessGame.Board;
+using ChessGame.Board.Exceptions;
+using ChessGame.Chess;
 
 namespace ChessGame
 {
@@ -25,6 +27,37 @@ namespace ChessGame
             }
 
             PrintChessBoardHorizontalLabel();
+
+            Console.Write("\n\n");
+        }
+
+        public static ChessPosition ReadChessPosition ()
+        {
+            var s = Console.ReadLine();
+
+            if(s.Length.Equals(2))
+            {
+                if (char.IsLetter(s[0]) && char.IsNumber(s[1]))
+                    return new ChessPosition(char.ToLower(s[0]), int.Parse(s[1].ToString()));
+                else
+                    throw new ChessBoardException("Invalid position!");
+            }
+            else
+            {
+                throw new ChessBoardException("Invalid position!");
+            }
+        }
+
+        public static void PrintException (Exception e)
+        {
+            Console.Clear();
+
+            Console.ForegroundColor = (ConsoleColor)Color.Red;
+            
+            Console.Write("[ERRO]: {0}", e.Message);
+            Console.ReadLine();
+
+            Console.ForegroundColor = _defaultConsoleColor;            
         }
 
         private static void PrintChessBoardPiece (Piece piece)
@@ -43,14 +76,11 @@ namespace ChessGame
 
         private static void PrintChessBoardVerticalLabel (int line)
         {
-            Console.ForegroundColor = (ConsoleColor)Color.DarkGray;
             Console.Write(8 - line + " ");
-            Console.ForegroundColor = _defaultConsoleColor;
         }
 
         private static void PrintChessBoardHorizontalLabel ()
         {
-            Console.ForegroundColor = (ConsoleColor)Color.DarkGray;
             string label = "  ";
             var firstChar = (int)'a';
 
@@ -58,7 +88,6 @@ namespace ChessGame
                 label += (char)(firstChar + c) + " ";
 
             Console.Write(label.ToUpper());
-            Console.ForegroundColor = _defaultConsoleColor;
         }
 
     }

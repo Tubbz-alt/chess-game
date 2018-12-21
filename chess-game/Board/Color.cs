@@ -6,6 +6,8 @@ namespace ChessGame.Board
     {
         DarkGray = 8,
         Gray = 7,
-        Yellow = 14
+        Yellow = 14,
+        White = 15,
+        Red = 12
     }
 }
