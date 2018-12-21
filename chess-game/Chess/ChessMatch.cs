@@ -21,7 +21,7 @@ namespace ChessGame.Chess
             PlacePieces();
         }
 
-        public void ExecuteMoviment (ChessPosition origin, ChessPosition target)
+        public void ExecuteMovement (ChessPosition origin, ChessPosition target)
         {
             var originPiece = ChessBoard.RemovePiece(origin.ToPosition());
             var removedPiece = ChessBoard.RemovePiece(target.ToPosition());

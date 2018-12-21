@@ -26,7 +26,7 @@ namespace ChessGame
                     Console.Write("Target: ");
                     var targetPosition = View.ReadChessPosition();
 
-                    match.ExecuteMoviment(originPosition, targetPosition);
+                    match.ExecuteMovement(originPosition, targetPosition);
                 }
                 catch (ChessBoardException e)
                 {
