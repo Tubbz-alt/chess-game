@@ -8,21 +8,45 @@ namespace ChessGame
 {
     static class View
     {
-        private static readonly ConsoleColor _defaultConsoleColor = ConsoleColor.Gray;
+        private static readonly ConsoleColor _defaultConsoleForegroundColor = ConsoleColor.Gray;
+        private static readonly ConsoleColor _defaultConsoleBackgroundColor = ConsoleColor.Black;
 
         public static void PrintChessBoard (ChessBoard chessBoard)
         {
             Console.Clear();
-
-            var defaultConsoleColor = Console.ForegroundColor;
 
             for (int l = 0; l < chessBoard.Lines; l++)
             {
                 PrintChessBoardVerticalLabel(l);
 
                 for (int c = 0; c < chessBoard.Columns; c++)
-                    PrintChessBoardPiece(chessBoard.GetPiece(new Position(l, c)));
+                    PrintChessBoardPiece(chessBoard.GetPiece(new Position(l, c)), false);
 
+                Console.WriteLine();
+            }
+
+            PrintChessBoardHorizontalLabel();
+
+            Console.Write("\n\n");
+        }
+
+        public static void PrintChessBoard (ChessBoard chessBoard, ChessPosition origin)
+        {
+            Console.Clear();
+
+            for (int l = 0; l < chessBoard.Lines; l++)
+            {
+                PrintChessBoardVerticalLabel(l);
+
+                for (int c = 0; c < chessBoard.Columns; c++)
+                {
+                    bool[,] possibleMovements = chessBoard.GetPiece(origin.ToPosition()).PossibleMovements();
+
+                    if (possibleMovements[l, c])
+                        PrintChessBoardPiece(chessBoard.GetPiece(new Position(l, c)), true);
+                    else
+                        PrintChessBoardPiece(chessBoard.GetPiece(new Position(l, c)), false);
+                }
                 Console.WriteLine();
             }
 
@@ -54,24 +78,29 @@ namespace ChessGame
 
             Console.ForegroundColor = (ConsoleColor)Color.Red;
             
-            Console.Write("[ERRO]: {0}", e.Message);
+            Console.Write("[Error]: {0}", e.Message);
             Console.ReadLine();
 
-            Console.ForegroundColor = _defaultConsoleColor;            
+            Console.ForegroundColor = _defaultConsoleForegroundColor;            
         }
 
-        private static void PrintChessBoardPiece (Piece piece)
+        private static void PrintChessBoardPiece (Piece piece, bool possibleMovement)
         {
+            if (possibleMovement)
+                Console.BackgroundColor = (ConsoleColor)Color.DarkYellow;
+
             if (piece != null)
             {
                 Console.ForegroundColor = (ConsoleColor)piece.Color;
                 Console.Write(piece + " ");
-                Console.ForegroundColor = _defaultConsoleColor;
+                Console.ForegroundColor = _defaultConsoleForegroundColor;
             }
             else
             {
                 Console.Write("- ");
             }
+
+            Console.BackgroundColor = _defaultConsoleBackgroundColor;
         }
 
         private static void PrintChessBoardVerticalLabel (int line)
@@ -89,6 +118,5 @@ namespace ChessGame
 
             Console.Write(label.ToUpper());
         }
-
     }
 }

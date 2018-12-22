@@ -7,8 +7,8 @@ namespace ChessGame.Board
         public ChessBoard ChessBoard { get; private set; }
         public Position Position { get; protected set; }
         public Color Color { get; protected set; }
-        public int Movements { get; protected set; }
-    
+        public int Movements { get; private set; }
+
         public Piece (ChessBoard chessBoard, Color color)
         {
             ChessBoard = chessBoard;
@@ -27,5 +27,12 @@ namespace ChessGame.Board
         {
             Position = newPosition;
         }
+
+        protected bool CanMove (Position position)
+        {
+            return (!ChessBoard.PieceExists(position) ||  ChessBoard.GetPiece(position).Color != Color);
+        }
+
+        public abstract bool[,] PossibleMovements ();
     }
 }

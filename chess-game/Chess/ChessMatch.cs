@@ -25,10 +25,11 @@ namespace ChessGame.Chess
         {
             var originPiece = ChessBoard.RemovePiece(origin.ToPosition());
             var removedPiece = ChessBoard.RemovePiece(target.ToPosition());
-
             ChessBoard.PutPiece(originPiece, target.ToPosition());
-            
+
             originPiece.IncrementMoviments();
+            Turn++;
+            CurrentPlayer = (CurrentPlayer.Equals(Color.White)) ? Color.DarkGray : Color.White;
         }
 
         private void PlacePieces ()
