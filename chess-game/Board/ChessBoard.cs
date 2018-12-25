@@ -6,16 +6,13 @@ namespace ChessGame.Board
 {
     class ChessBoard
     {
-        public int Lines { get; private set; }
-        public int Columns { get; private set; }
+        public const int Lines = 8;
+        public const int Columns = 8;
 
         private Piece[,] Pieces;
 
         public ChessBoard ()
         {
-            Lines = 8;
-            Columns = 8;
-
             Pieces = new Piece[Lines, Columns];
         }
 
@@ -57,7 +54,7 @@ namespace ChessGame.Board
             return Pieces[position.Line, position.Column];    
         }
 
-        private void ValidPosition (Position position)
+        public void ValidPosition (Position position)
         {
             if (position.Line < 0 || position.Line >= Lines || position.Column < 0 || position.Column >= Columns)
                 throw new ChessBoardException("Not valid position!");

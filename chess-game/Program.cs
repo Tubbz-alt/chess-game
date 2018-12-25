@@ -16,23 +16,25 @@ namespace ChessGame
             while (!match.Finished)
             {
                 View.PrintChessBoard(match.ChessBoard);
+                View.PrintMatchStatus(match);
 
                 try
                 {
                     Console.Write("Origin: ");
                     var originPosition = View.ReadChessPosition();
 
-                    if(match.ChessBoard.PieceExists(originPosition.ToPosition()))
-                    {
-                        if (match.ChessBoard.GetPiece(originPosition.ToPosition()).Color.Equals(match.CurrentPlayer))
-                            // Print chess board with the piece's possible movements
-                            View.PrintChessBoard(match.ChessBoard, originPosition);
-                        else
-                            throw new ChessMatchException("You can only movement your pieces");
-                    }
+                    match.CheckOriginPosition(originPosition);
+                    
+                    // Print the chess board with the piece's possible movements
+                    View.PrintChessBoard(match.ChessBoard, originPosition);
+                    View.PrintMatchStatus(match);
+
+                    Console.WriteLine("Origin: {0}{1}", char.ToUpper(originPosition.Column), originPosition.Line);
 
                     Console.Write("Target: ");
                     var targetPosition = View.ReadChessPosition();
+
+                    match.CheckTargetPosition(targetPosition);
 
                     match.ExecuteMovement(originPosition, targetPosition);
                 }

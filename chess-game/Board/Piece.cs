@@ -18,14 +18,24 @@ namespace ChessGame.Board
             Movements = 0;
         }  
       
-        public void IncrementMoviments ()
+        public void IncrementMovement ()
         {
             Movements++;
+        }
+
+        public void DecrementMovement ()
+        {
+            Movements--;
         }
 
         public void AlterPosition (Position newPosition)
         {
             Position = newPosition;
+        }
+
+        public bool IsPossibleMovement (Position position)
+        {
+            return PossibleMovements()[position.Line, position.Column];
         }
 
         protected bool CanMove (Position position)

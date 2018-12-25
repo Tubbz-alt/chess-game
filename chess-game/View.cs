@@ -15,11 +15,11 @@ namespace ChessGame
         {
             Console.Clear();
 
-            for (int l = 0; l < chessBoard.Lines; l++)
+            for (int l = 0; l < ChessBoard.Lines; l++)
             {
                 PrintChessBoardVerticalLabel(l);
 
-                for (int c = 0; c < chessBoard.Columns; c++)
+                for (int c = 0; c < ChessBoard.Columns; c++)
                     PrintChessBoardPiece(chessBoard.GetPiece(new Position(l, c)), false);
 
                 Console.WriteLine();
@@ -34,24 +34,34 @@ namespace ChessGame
         {
             Console.Clear();
 
-            for (int l = 0; l < chessBoard.Lines; l++)
+            for (int l = 0; l < ChessBoard.Lines; l++)
             {
                 PrintChessBoardVerticalLabel(l);
 
-                for (int c = 0; c < chessBoard.Columns; c++)
+                for (int c = 0; c < ChessBoard.Columns; c++)
                 {
+                    var currentPosition = new Position(l, c);
                     bool[,] possibleMovements = chessBoard.GetPiece(origin.ToPosition()).PossibleMovements();
 
                     if (possibleMovements[l, c])
-                        PrintChessBoardPiece(chessBoard.GetPiece(new Position(l, c)), true);
+                        PrintChessBoardPiece(chessBoard.GetPiece(currentPosition), true);
                     else
-                        PrintChessBoardPiece(chessBoard.GetPiece(new Position(l, c)), false);
+                        PrintChessBoardPiece(chessBoard.GetPiece(currentPosition));
                 }
                 Console.WriteLine();
             }
 
             PrintChessBoardHorizontalLabel();
 
+            Console.Write("\n\n");
+        }
+
+        public static void PrintMatchStatus (ChessMatch chessMatch)
+        {
+            Console.WriteLine("Turn: {0}", chessMatch.Turn);
+            Console.WriteLine("Current player: {0} piece's", chessMatch.CurrentPlayer);
+            PrintOutOfGamePiecesByColor(chessMatch, Color.White);
+            PrintOutOfGamePiecesByColor(chessMatch, Color.DarkGray);
             Console.Write("\n\n");
         }
 
@@ -78,10 +88,24 @@ namespace ChessGame
 
             Console.ForegroundColor = (ConsoleColor)Color.Red;
             
-            Console.Write("[Error]: {0}", e.Message);
+            Console.WriteLine("[Error]: {0}", e.Message);
             Console.ReadLine();
 
             Console.ForegroundColor = _defaultConsoleForegroundColor;            
+        }
+
+        private static void PrintChessBoardPiece (Piece piece)
+        {
+            if (piece != null)
+            {
+                Console.ForegroundColor = (ConsoleColor)piece.Color;
+                Console.Write(piece + " ");
+                Console.ForegroundColor = _defaultConsoleForegroundColor;
+            }
+            else
+            {
+                Console.Write("- ");
+            }
         }
 
         private static void PrintChessBoardPiece (Piece piece, bool possibleMovement)
@@ -105,18 +129,32 @@ namespace ChessGame
 
         private static void PrintChessBoardVerticalLabel (int line)
         {
-            Console.Write(8 - line + " ");
+            Console.Write(ChessBoard.Lines - line + " ");
         }
 
         private static void PrintChessBoardHorizontalLabel ()
         {
             string label = "  ";
-            var firstChar = (int)'a';
 
-            for (int c = 0; c < 8; c++)
-                label += (char)(firstChar + c) + " ";
+            for (int c = 0; c < ChessBoard.Columns; c++)
+                label += (char)('a' + c) + " ";
 
             Console.Write(label.ToUpper());
+        }
+    
+        private static void PrintOutOfGamePiecesByColor (ChessMatch chessMatch, Color color)
+        {
+            Console.Write("Out pieces: ");
+            Console.ForegroundColor = (ConsoleColor)color;
+            string value = "[";
+
+            foreach (var piece in chessMatch.GetOutOfGamePieces(color))
+                value += (piece + " ");
+
+            value += "]";
+
+            Console.WriteLine(value);
+            Console.ForegroundColor = _defaultConsoleForegroundColor;
         }
     }
 }
