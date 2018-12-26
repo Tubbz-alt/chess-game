@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using ChessGame.Board;
 using ChessGame.Board.Exceptions;
@@ -14,100 +15,75 @@ namespace ChessGame.Chess
 
         public override bool[,] PossibleMovements ()
         {
+            List<Position> positions = new List<Position>();
             bool[,] movements = new bool[ChessBoard.Lines, ChessBoard.Columns];
             var loopCount = 1;
 
-            for (int c = Position.Column + 1; c < 8; c++)
+            for (var c = Position.Column; c < ChessBoard.Columns; c++ )
             {
-                var position = new Position(Position.Line - loopCount, c);
+                var currentPosition = new Position(Position.Line - loopCount, Position.Column + loopCount);
 
-                try
+                if (ChessBoard.IsValidPosition(currentPosition))
                 {
-                    if (CanMove(position))
-                        movements[position.Line, c] = true;
+                    positions.Add(currentPosition);
 
-                    if (ChessBoard.PieceExists(position) || c + 1 >= 8)
-                    {
-                        loopCount = 1;
+                    if (ChessBoard.PieceExists(currentPosition))
                         break;
-                    }
                 }
-                catch (ChessBoardException)
-                {
-                    continue;
-                }
-
                 loopCount++;
             }
 
-            for (int c = Position.Column - 1; c >= 0; c--)
+            loopCount = 1;
+
+            for (var c = Position.Column; c >= 0; c--)
             {
-                var position = new Position(Position.Line - loopCount, c);
+                var currentPosition = new Position(Position.Line - loopCount, Position.Column - loopCount);
 
-                try
+                if (ChessBoard.IsValidPosition(currentPosition)) 
                 {
-                    if (CanMove(position))
-                        movements[position.Line, c] = true;
+                    positions.Add(currentPosition);
 
-                    if (ChessBoard.PieceExists(position) || c - 1 < 0)
-                    {
-                        loopCount = 1;
+                    if (ChessBoard.PieceExists(currentPosition))
                         break;
-                    }
                 }
-                catch (ChessBoardException)
-                {
-                    continue;
-                }
+                loopCount++;
+            }
+
+            loopCount = 1;
+
+            for (var c = Position.Column; c >= 0; c--)
+            {
+                var currentPosition = new Position(Position.Line + loopCount, Position.Column - loopCount);
                 
-                loopCount++;
-            }
-
-            for (int c = Position.Column + 1; c < 8; c++)
-            {
-                var position = new Position(Position.Line + loopCount, c);
-
-                try
+                if(ChessBoard.IsValidPosition(currentPosition))
                 {
-                    if (CanMove(position))
-                        movements[position.Line, c] = true;
+                    positions.Add(currentPosition);
 
-                    if (ChessBoard.PieceExists(position) || c + 1 >= 8)
-                    {
-                        loopCount = 1;
+                    if (ChessBoard.PieceExists(currentPosition))
                         break;
-                    }
                 }
-                catch (ChessBoardException)
-                {
-                    continue;
-                }
-
                 loopCount++;
             }
 
-            for (int c = Position.Column - 1; c >= 0; c--)
+            loopCount = 1;
+
+            for (var c = Position.Column; c < ChessBoard.Columns; c++)
             {
-                var position = new Position(Position.Line + loopCount, c);
-
-                try
+                var currentPosition = new Position(Position.Line + loopCount, Position.Column + loopCount);
+                
+                if(ChessBoard.IsValidPosition(currentPosition))
                 {
-                    if (CanMove(position))
-                        movements[position.Line, c] = true;
+                    positions.Add(currentPosition);
 
-                    if (ChessBoard.PieceExists(position) || c - 1 < 0)
-                    {
-                        loopCount = 1;
+                    if (ChessBoard.PieceExists(currentPosition))
                         break;
-                    }
                 }
-                catch (ChessBoardException)
-                {
-                    continue;
-                }
-
                 loopCount++;
             }
+
+            foreach(var currentMovement in positions)
+                if (CanMove(currentMovement))
+                    movements[currentMovement.Line, currentMovement.Column] = true;
 
             return movements;
         }

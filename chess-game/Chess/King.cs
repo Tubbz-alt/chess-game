@@ -27,17 +27,8 @@ namespace ChessGame.Chess
             };
             
             foreach (var currentMovement in testMovements)
-            {
-                try
-                {
-                    if (CanMove(currentMovement))
-                        movements[currentMovement.Line, currentMovement.Column] = true;
-                }
-                catch (ChessBoardException)
-                {
-                    continue;
-                }
-            }
+                if (ChessBoard.IsValidPosition(currentMovement) && CanMove(currentMovement))
+                    movements[currentMovement.Line, currentMovement.Column] = true;
 
             return movements;
         }

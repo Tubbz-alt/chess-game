@@ -25,19 +25,12 @@ namespace ChessGame.Chess
 
             foreach (var currentMovement in testMovements)
             {
-                try
+                if (currentMovement != null && ChessBoard.IsValidPosition(currentMovement) && CanMove(currentMovement))
                 {
-                    if(currentMovement != null && CanMove(currentMovement))
-                    {
-                        movements[currentMovement.Line, currentMovement.Column] = true;
+                    movements[currentMovement.Line, currentMovement.Column] = true;
 
-                        if(ChessBoard.PieceExists(currentMovement))
-                            break;
-                    }
-                }
-                catch (ChessBoardException)
-                {
-                    continue;
+                    if (ChessBoard.PieceExists(currentMovement))
+                        break;
                 }
             }
 

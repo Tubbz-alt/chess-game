@@ -54,9 +54,17 @@ namespace ChessGame.Board
             return Pieces[position.Line, position.Column];    
         }
 
-        public void ValidPosition (Position position)
+
+        public bool IsValidPosition (Position position)
         {
             if (position.Line < 0 || position.Line >= Lines || position.Column < 0 || position.Column >= Columns)
+                return false;
+            return true;
+        }
+
+        public void ValidPosition (Position position)
+        {
+            if (!IsValidPosition(position))
                 throw new ChessBoardException("Not valid position!");
         }
     }
