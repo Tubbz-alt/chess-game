@@ -17,7 +17,8 @@ namespace ChessGame.Chess
         public List<Piece> OutOfGamePieces { get; private set; }
         public DateTime StartedAt { get; private set; }
         public DateTime FinishedAt { get; private set; }
-
+        public bool Check { get; private set; }
+        
         public ChessMatch ()
         {
             ChessBoard = new ChessBoard();
@@ -45,11 +46,28 @@ namespace ChessGame.Chess
 
                 InsertPiece(originPiece, target);
 
-                // Verify if the player CHECKED himself
+                // Verify if the player CHECKED himself or if the player already is on CHECK
                 if (IsInCheck(GetKing(CurrentPlayer)))
                 {
                     UndoMovement(origin, target, currentTargetPiece);
-                    throw new ChessMatchException("You can't CHECK yourself");
+
+                    if(Check)
+                        throw new ChessMatchException("You are on CHECK!");
+                    else
+                        throw new ChessMatchException("You can't CHECK yourself");
+                }
+
+                // Verify if the player CHECKED the adversary
+                Check = IsInCheck(GetKing(Adversary(CurrentPlayer)));
+
+                // Verify if the player CHECKMATE the adversary
+                if(Check)
+                {
+                    if (IsInCheckMate(GetKing(Adversary(CurrentPlayer))))
+                    {
+                        Finished = true;
+                        FinishedAt = DateTime.Now;
+                    }
                 }
 
                 NextTurn(originPiece);
@@ -102,39 +120,33 @@ namespace ChessGame.Chess
 
         private void PlacePieces ()
         {
-            //// White's pieces
-            //InsertNewPiece(new Tower(ChessBoard, Color.White), new ChessPosition('a', 1));
-            //InsertNewPiece(new Tower(ChessBoard, Color.White), new ChessPosition('h', 1));
-            //InsertNewPiece(new King(ChessBoard, Color.White), new ChessPosition('d', 1));
-            //InsertNewPiece(new Bishop(ChessBoard, Color.White), new ChessPosition('e', 1));
-            //InsertNewPiece(new Bishop(ChessBoard, Color.White), new ChessPosition('c', 1));
+            // White's pieces
+            InsertNewPiece(new Tower(ChessBoard, Color.White), new ChessPosition('a', 1));
+            InsertNewPiece(new Tower(ChessBoard, Color.White), new ChessPosition('h', 1));
+            InsertNewPiece(new King(ChessBoard, Color.White), new ChessPosition('d', 1));
+            InsertNewPiece(new Bishop(ChessBoard, Color.White), new ChessPosition('e', 1));
+            InsertNewPiece(new Bishop(ChessBoard, Color.White), new ChessPosition('c', 1));
 
-            //// White pawns
-            //for (var c = 0; c < ChessBoard.Columns; c++)
-            //{
-            //    char currentColumn = (char)('a' + c);
-            //    InsertNewPiece(new Pawn(ChessBoard, Color.White), new ChessPosition(currentColumn, 2));
-            //}
+            // White pawns
+            for (var c = 0; c < ChessBoard.Columns; c++)
+            {
+                char currentColumn = (char)('a' + c);
+                InsertNewPiece(new Pawn(ChessBoard, Color.White), new ChessPosition(currentColumn, 2));
+            }
 
-            //// Black's pieces
-            //InsertNewPiece(new Tower(ChessBoard, Color.DarkGray), new ChessPosition('a', 8));
-            //InsertNewPiece(new Tower(ChessBoard, Color.DarkGray), new ChessPosition('h', 8));
-            //InsertNewPiece(new King(ChessBoard, Color.DarkGray), new ChessPosition('d', 8));
-            //InsertNewPiece(new Bishop(ChessBoard, Color.DarkGray), new ChessPosition('c', 8));
-            //InsertNewPiece(new Bishop(ChessBoard, Color.DarkGray), new ChessPosition('e', 8));
+            // Black's pieces
+            InsertNewPiece(new Tower(ChessBoard, Color.DarkGray), new ChessPosition('a', 8));
+            InsertNewPiece(new Tower(ChessBoard, Color.DarkGray), new ChessPosition('h', 8));
+            InsertNewPiece(new King(ChessBoard, Color.DarkGray), new ChessPosition('d', 8));
+            InsertNewPiece(new Bishop(ChessBoard, Color.DarkGray), new ChessPosition('c', 8));
+            InsertNewPiece(new Bishop(ChessBoard, Color.DarkGray), new ChessPosition('e', 8));
 
-            //// Black pawns
-            //for (var c = 0; c < ChessBoard.Columns; c++)
-            //{
-            //    char currentColumn = (char)('a' + c);
-            //    InsertNewPiece(new Pawn(ChessBoard, Color.DarkGray), new ChessPosition(currentColumn, 7));
-            //}
-
-            InsertNewPiece(new King(ChessBoard, Color.DarkGray), new ChessPosition('e', 8));
-            InsertNewPiece(new Tower(ChessBoard, Color.DarkGray), new ChessPosition('e', 7));
-
-            InsertNewPiece(new Tower(ChessBoard, Color.White), new ChessPosition('e', 3));
-            InsertNewPiece(new King(ChessBoard, Color.White), new ChessPosition('e', 1));
+            // Black pawns
+            for (var c = 0; c < ChessBoard.Columns; c++)
+            {
+                char currentColumn = (char)('a' + c);
+                InsertNewPiece(new Pawn(ChessBoard, Color.DarkGray), new ChessPosition(currentColumn, 7));
+            }
         }
 
         private void InsertPiece (Piece piece, ChessPosition chessPosition)
@@ -165,12 +177,16 @@ namespace ChessGame.Chess
     
         private void NextTurn (Piece originPiece)
         {
-            Turn++;
             originPiece.IncrementMovement();
-            CurrentPlayer = (CurrentPlayer.Equals(Color.White)) ? Color.DarkGray : Color.White;
+            
+            if(!Finished)
+            {
+                CurrentPlayer = (CurrentPlayer.Equals(Color.White)) ? Color.DarkGray : Color.White;
+                Turn++;
+            }
         }
     
-        private bool IsInCheck(King king)
+        private bool IsInCheck (King king)
         {
             var adversaryPieces = GetInGamePieces(Adversary(king.Color));
 
@@ -179,6 +195,29 @@ namespace ChessGame.Chess
                     return true;
 
             return false;
+        }
+
+        private bool IsInCheckMate (King king)
+        {
+            bool[,] kingPossibleMovements = king.PossibleMovements();
+            var kingPossibleMovementsCount = 0;
+
+            foreach(var currentPiece in GetInGamePieces(Adversary(king.Color)))
+            {
+                bool[,] adversaryPossibleMovements = currentPiece.PossibleMovements();
+
+                for(var l = 0; l < ChessBoard.Lines; l++)
+                    for(var c = 0; c < ChessBoard.Columns; c++)
+                        if (kingPossibleMovements[l, c] && adversaryPossibleMovements[l, c])
+                            kingPossibleMovements[l, c] = false;
+            }
+
+            for (var l = 0; l < ChessBoard.Lines; l++)
+                for (var c = 0; c < ChessBoard.Columns; c++)
+                    if (kingPossibleMovements[l, c])
+                        kingPossibleMovementsCount++;
+
+            return (kingPossibleMovementsCount.Equals(0));
         }
 
         private King GetKing (Color color)

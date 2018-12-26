@@ -62,7 +62,33 @@ namespace ChessGame
             Console.WriteLine("Current player: {0} piece's", chessMatch.CurrentPlayer);
             PrintOutOfGamePiecesByColor(chessMatch, Color.White);
             PrintOutOfGamePiecesByColor(chessMatch, Color.DarkGray);
+
+            if (chessMatch.Check)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("CHECK!!!");
+                Console.ForegroundColor = _defaultConsoleForegroundColor;
+            }
+
             Console.Write("\n\n");
+        }
+
+        public static void PrintEndOfMatch (ChessMatch chessMatch)
+        {
+            Console.Clear();
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("CHECKMATE!!!\n");
+            Console.ForegroundColor = _defaultConsoleForegroundColor;
+
+            Console.WriteLine("Winner: {0} piece's", chessMatch.CurrentPlayer);
+            Console.WriteLine("Turn: {0}", chessMatch.Turn);
+            Console.WriteLine("Started at: {0}", chessMatch.StartedAt);
+            Console.WriteLine("Finished at: {0}\n", chessMatch.FinishedAt);
+
+            PrintChessBoardOnEndOfMatch(chessMatch.ChessBoard);
+
+            Console.ReadLine();
         }
 
         public static ChessPosition ReadChessPosition ()
@@ -155,6 +181,23 @@ namespace ChessGame
 
             Console.WriteLine(value);
             Console.ForegroundColor = _defaultConsoleForegroundColor;
+        }
+
+        private static void PrintChessBoardOnEndOfMatch (ChessBoard chessBoard)
+        {
+            for (int l = 0; l < ChessBoard.Lines; l++)
+            {
+                PrintChessBoardVerticalLabel(l);
+
+                for (int c = 0; c < ChessBoard.Columns; c++)
+                    PrintChessBoardPiece(chessBoard.GetPiece(new Position(l, c)), false);
+
+                Console.WriteLine();
+            }
+
+            PrintChessBoardHorizontalLabel();
+
+            Console.Write("\n\n");
         }
     }
 }

@@ -47,6 +47,8 @@ namespace ChessGame
                     View.PrintException(e);
                 }
             }
+
+            View.PrintEndOfMatch(match);
         }
     }
 }
