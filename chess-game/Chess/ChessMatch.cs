@@ -124,8 +124,11 @@ namespace ChessGame.Chess
             InsertNewPiece(new Tower(ChessBoard, Color.White), new ChessPosition('a', 1));
             InsertNewPiece(new Tower(ChessBoard, Color.White), new ChessPosition('h', 1));
             InsertNewPiece(new King(ChessBoard, Color.White), new ChessPosition('d', 1));
-            InsertNewPiece(new Bishop(ChessBoard, Color.White), new ChessPosition('e', 1));
+            InsertNewPiece(new Queen(ChessBoard, Color.White), new ChessPosition('e', 1));
+            InsertNewPiece(new Bishop(ChessBoard, Color.White), new ChessPosition('f', 1));
             InsertNewPiece(new Bishop(ChessBoard, Color.White), new ChessPosition('c', 1));
+            InsertNewPiece(new Horse(ChessBoard, Color.White), new ChessPosition('b', 1));
+            InsertNewPiece(new Horse(ChessBoard, Color.White), new ChessPosition('g', 1));
 
             // White pawns
             for (var c = 0; c < ChessBoard.Columns; c++)
@@ -139,7 +142,10 @@ namespace ChessGame.Chess
             InsertNewPiece(new Tower(ChessBoard, Color.DarkGray), new ChessPosition('h', 8));
             InsertNewPiece(new King(ChessBoard, Color.DarkGray), new ChessPosition('d', 8));
             InsertNewPiece(new Bishop(ChessBoard, Color.DarkGray), new ChessPosition('c', 8));
-            InsertNewPiece(new Bishop(ChessBoard, Color.DarkGray), new ChessPosition('e', 8));
+            InsertNewPiece(new Queen(ChessBoard, Color.DarkGray), new ChessPosition('e', 8));
+            InsertNewPiece(new Bishop(ChessBoard, Color.DarkGray), new ChessPosition('f', 8));
+            InsertNewPiece(new Horse(ChessBoard, Color.DarkGray), new ChessPosition('b', 8));
+            InsertNewPiece(new Horse(ChessBoard, Color.DarkGray), new ChessPosition('g', 8));
 
             // Black pawns
             for (var c = 0; c < ChessBoard.Columns; c++)
@@ -225,7 +231,7 @@ namespace ChessGame.Chess
             return (King) GetInGamePieces(color).Find(p => p is King);
         }
 
-        private Color Adversary (Color color)
+        public static Color Adversary (Color color)
         {
             return (color.Equals(Color.White)) ? Color.DarkGray : Color.White;
         }

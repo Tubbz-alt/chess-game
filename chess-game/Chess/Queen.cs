@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using ChessGame.Board;
 using ChessGame.Board.Exceptions;
 
 namespace ChessGame.Chess
 {
-    sealed class Bishop : Piece
+    sealed class Queen : Piece
     {
-        public Bishop (ChessBoard chessBoard, Color color) 
+        public Queen (ChessBoard chessBoard, Color color) 
             : base(chessBoard, color)
         {
         }
@@ -16,10 +15,47 @@ namespace ChessGame.Chess
         public override bool[,] PossibleMovements ()
         {
             List<Position> positions = new List<Position>();
-            bool[,] movements = new bool[ChessBoard.Lines, ChessBoard.Columns];
+            bool[,] movements = new bool[ChessBoard.Columns, ChessBoard.Lines];
             var loopCount = 1;
 
-            for (var c = Position.Column; c < ChessBoard.Columns; c++ )
+            // Left movement
+            for (int c = Position.Column - 1; c >= 0; c--)
+            {
+                var position = new Position(Position.Line, c);
+                TestMovement(position, positions);
+
+                if (ChessBoard.PieceExists(position))
+                    break;
+            }
+            // Right movement
+            for (int c = Position.Column + 1; c < 8; c++)
+            {
+                var position = new Position(Position.Line, c);
+                TestMovement(position, positions);
+
+                if (ChessBoard.PieceExists(position))
+                    break;
+            }
+            // Up movement
+            for (int l = Position.Line - 1; l >= 0; l--)
+            {
+                var position = new Position(l, Position.Column);
+                TestMovement(position, positions);
+
+                if (ChessBoard.PieceExists(position))
+                    break;
+            }
+            // Down movement
+            for (int l = Position.Line + 1; l < 8; l++)
+            {
+                var position = new Position(l, Position.Column);
+                TestMovement(position, positions);
+                
+                if (ChessBoard.PieceExists(position))
+                    break;
+            }
+
+            for (var c = Position.Column; c < ChessBoard.Columns; c++)
             {
                 var position = new Position(Position.Line - loopCount, Position.Column + loopCount);
                 TestMovement(position, positions);
@@ -52,7 +88,7 @@ namespace ChessGame.Chess
 
                 if (ChessBoard.IsValidPosition(position) && ChessBoard.PieceExists(position))
                     break;
-
+                
                 loopCount++;
             }
 
@@ -69,7 +105,7 @@ namespace ChessGame.Chess
                 loopCount++;
             }
 
-            foreach(var currentMovement in positions)
+            foreach (var currentMovement in positions)
                 movements[currentMovement.Line, currentMovement.Column] = true;
 
             return movements;
@@ -83,7 +119,7 @@ namespace ChessGame.Chess
 
         public override string ToString ()
         {
-            return "B";
+            return "Q";
         }
     }
 }

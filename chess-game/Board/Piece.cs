@@ -38,7 +38,7 @@ namespace ChessGame.Board
             return PossibleMovements()[position.Line, position.Column];
         }
 
-        protected bool CanMove (Position position)
+        protected virtual bool CanMove (Position position)
         {
             return (!ChessBoard.PieceExists(position) ||  ChessBoard.GetPiece(position).Color != Color);
         }

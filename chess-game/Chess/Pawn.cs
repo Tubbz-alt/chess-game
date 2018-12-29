@@ -16,25 +16,48 @@ namespace ChessGame.Chess
         public override bool[,] PossibleMovements ()
         {
             bool[,] movements = new bool[ChessBoard.Lines, ChessBoard.Columns];
-            Position[] testMovements = new Position[2];
+            Position[] positions = new Position[4];
 
-            testMovements[0] = new Position(((Color.Equals(Color.White) ? Position.Line - 1 : Position.Line + 1)), Position.Column);
-            
-            if (Movements.Equals(0))
-                testMovements[1] = new Position(((Color.Equals(Color.White) ? Position.Line - 2 : Position.Line + 2)), Position.Column);
-
-            foreach (var currentMovement in testMovements)
+            if(Color.Equals(Color.White))
             {
-                if (currentMovement != null && ChessBoard.IsValidPosition(currentMovement) && CanMove(currentMovement))
-                {
-                    movements[currentMovement.Line, currentMovement.Column] = true;
+                positions[0] = (new Position(Position.Line - 1, Position.Column));
+                positions[1] = Movements.Equals(0) ? (new Position(Position.Line - 2, Position.Column)) : null;
+                positions[2] = (new Position(Position.Line - 1, Position.Column + 1));
+                positions[3] = (new Position(Position.Line - 1, Position.Column - 1));
+            }
+            else
+            {
+                positions[0] = (new Position(Position.Line + 1, Position.Column));
+                positions[1] = Movements.Equals(0) ? (new Position(Position.Line + 2, Position.Column)) : null;
+                positions[2] = (new Position(Position.Line + 1, Position.Column + 1));
+                positions[3] = (new Position(Position.Line + 1, Position.Column - 1));
+            }
 
-                    if (ChessBoard.PieceExists(currentMovement))
-                        break;
-                }
+            for (var c = 0; c < positions.Length; c++ )
+            {
+                var currentPosition = positions[c];
+
+                if (currentPosition != null && ChessBoard.IsValidPosition(currentPosition))
+                {
+                    if (c < 2)
+                    {
+                        if (CanMove(currentPosition))
+                            movements[currentPosition.Line, currentPosition.Column] = true;
+                    }
+                    else
+                    {
+                        if (ChessBoard.HasEnemy(currentPosition, ChessMatch.Adversary(Color)))
+                            movements[currentPosition.Line, currentPosition.Column] = true;
+                    }
+                }   
             }
 
             return movements;
+        }
+
+        protected override bool CanMove (Position position)
+        {
+            return !ChessBoard.PieceExists(position);
         }
 
         public override string ToString ()

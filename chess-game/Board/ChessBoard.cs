@@ -54,6 +54,11 @@ namespace ChessGame.Board
             return Pieces[position.Line, position.Column];    
         }
 
+        public bool HasEnemy (Position position, Color color)
+        {
+            var piece = GetPiece(position);
+            return piece != null && piece.Color.Equals(color);
+        }
 
         public bool IsValidPosition (Position position)
         {

@@ -51,8 +51,10 @@
     <Compile Include="Chess\ChessMatch.cs" />
     <Compile Include="Chess\ChessPosition.cs" />
     <Compile Include="Chess\Exceptions\ChessMatchException.cs" />
+    <Compile Include="Chess\Horse.cs" />
     <Compile Include="Chess\King.cs" />
     <Compile Include="Chess\Pawn.cs" />
+    <Compile Include="Chess\Queen.cs" />
     <Compile Include="Chess\Tower.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
